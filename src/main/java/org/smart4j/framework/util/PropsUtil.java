@@ -70,7 +70,7 @@ public final class PropsUtil {
         if (props.containsKey(key)) {
             value = props.getProperty(key);
         }
-        return getString(props, key, "");
+        return value;
     }
 
     /**
