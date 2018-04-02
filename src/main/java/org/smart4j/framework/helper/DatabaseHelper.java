@@ -160,8 +160,8 @@ public final class DatabaseHelper {
             columns.append(fieldName).append(", ");
             values.append("?, ");
         }
-        columns.replace(columns.lastIndexOf(", "), columns.length(), ")");
-        values.replace(columns.lastIndexOf(", "), columns.length(), ")");
+        columns.replace(columns.lastIndexOf(", "), columns.length()-1, ")");
+        values.replace(values.lastIndexOf(", "), values.length()-1, ")");
         sql += columns + " values " + values;
 
         Object[] params = fieldMap.values().toArray();
