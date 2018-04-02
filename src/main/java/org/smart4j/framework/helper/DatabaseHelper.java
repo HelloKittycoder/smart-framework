@@ -8,8 +8,8 @@ import org.apache.commons.dbutils.handlers.MapListHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smart4j.framework.util.CollectionUtil;
-import org.smart4j.framework.util.PropsUtil;
 
+import javax.sql.DataSource;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -18,7 +18,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 
 /**
@@ -27,22 +26,23 @@ import java.util.Properties;
 public final class DatabaseHelper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseHelper.class);
-    private static final ThreadLocal<Connection> CONNECTION_HOLDER = new ThreadLocal<Connection>();
-    private static final QueryRunner QUERY_RUNNER = new QueryRunner();
+    private static final ThreadLocal<Connection> CONNECTION_HOLDER;
+    private static final QueryRunner QUERY_RUNNER;
     private static final BasicDataSource DATA_SOURCE;
 
     static {
-        Properties conf = PropsUtil.loadProps("config.properties");
-        String driver = conf.getProperty("jdbc.driver");
-        String url = conf.getProperty("jdbc.url");
-        String username = conf.getProperty("jdbc.username");
-        String password = conf.getProperty("jdbc.password");
+        CONNECTION_HOLDER = new ThreadLocal<Connection>();
+        QUERY_RUNNER = new QueryRunner();
 
         DATA_SOURCE = new BasicDataSource();
-        DATA_SOURCE.setDriverClassName(driver);
-        DATA_SOURCE.setUrl(url);
-        DATA_SOURCE.setUsername(username);
-        DATA_SOURCE.setPassword(password);
+        DATA_SOURCE.setDriverClassName(ConfigHelper.getJdbcDriver());
+        DATA_SOURCE.setUrl(ConfigHelper.getJdbcUrl());
+        DATA_SOURCE.setUsername(ConfigHelper.getJdbcUsername());
+        DATA_SOURCE.setPassword(ConfigHelper.getJdbcPassword());
+    }
+
+    public static DataSource getDataSource() {
+        return DATA_SOURCE;
     }
 
     /**
